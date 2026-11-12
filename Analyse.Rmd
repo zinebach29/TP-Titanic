@@ -13,12 +13,163 @@ knitr::opts_chunk$set(
 )
 ```
 
+# 1. Chargement des packages et des données
 
-```{r}
+
+`install.packages("carData")`
+
+`install.packages("ggplot2")`
+
+`install.packages("dplyr")`
+
+```{r packages}
 library(carData)
+library(ggplot2)
+library(dplyr)
 
-data <- TitanicSurvival
-
-head(data)
+data("TitanicSurvival")
 ```
 
+## 1.2 Présentation du jeu de données
+
+```{r head}
+head(TitanicSurvival)
+```
+
+Le jeu de données contient des informations sur les passagers du Titanic.
+Les instructions suivantes permettent d'examiner sa structure et le contenu
+de ses variables.
+
+```{r structure}
+str(TitanicSurvival)
+```
+
+```{r summary}
+summary(TitanicSurvival)
+```
+
+## 1.3 Statistiques descriptives
+
+Nombre de passagers étudiés :
+
+```{r nombre-passagers}
+nrow(TitanicSurvival)
+```
+
+Répartition des passagers selon leur survie :
+
+```{r effectifs-survie}
+table(TitanicSurvival$survived, useNA = "ifany")
+```
+
+Répartition selon le sexe :
+
+```{r effectifs-sexe}
+table(TitanicSurvival$sex, useNA = "ifany")
+```
+
+Répartition selon la classe :
+
+```{r effectifs-classe}
+table(TitanicSurvival$passengerClass, useNA = "ifany")
+```
+
+Âge des passagers :
+
+```{r statistiques-age}
+summary(TitanicSurvival$age)
+```
+
+# 2. Analyse graphique
+
+## 2.1 Répartition de la survie en fonction du sexe
+
+Le graphique suivant compare le nombre de survivants et de non-survivants
+pour chaque sexe.
+
+```{r survie-sexe, fig.width=7, fig.height=5}
+ggplot(
+  TitanicSurvival,
+  aes(x = sex, fill = survived)
+) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Survie des passagers selon le sexe",
+    x = "Sexe",
+    y = "Nombre de passagers",
+    fill = "Statut de survie"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation :** Être une femme augmentait considérablement les chances de survie lors de ce naufrage, tandis qu'être un homme diminuait drastiquement ces chances.
+
+## 2.2 Répartition de la survie en fonction de la classe
+
+Ce graphique compare le nombre de survivants et de non-survivants dans
+chaque classe de passagers.
+
+```{r survie-classe, fig.width=7, fig.height=5}
+ggplot(
+  TitanicSurvival,
+  aes(x = passengerClass, fill = survived)
+) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Survie des passagers selon la classe",
+    x = "Classe du passager",
+    y = "Nombre de passagers",
+    fill = "Statut de survie"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation :** Plus la classe était élevée, plus les chances de survie étaient grandes. Le graphique montre une inégalité flagrante face à la mort lors du naufrage.
+
+## 2.3 Âge des passagers en fonction de la survie
+
+Le diagramme en boîte permet de comparer la distribution de l'âge entre les
+passagers ayant survécu et ceux qui n'ont pas survécu. Les valeurs d'âge
+manquantes sont ignorées pour ce graphique.
+
+```{r age-survie, fig.width=7, fig.height=5}
+ggplot(
+  TitanicSurvival,
+  aes(x = survived, y = age, fill = survived)
+) +
+  geom_boxplot(na.rm = TRUE) +
+  labs(
+    title = "Âge des passagers selon leur survie",
+    x = "Statut de survie",
+    y = "Âge (années)",
+    fill = "Statut de survie"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation :** Ce graphique montre que, globalement, les personnes qui ont survécu et celles qui sont décédées avaient des profils d'âge très similaires (majoritairement de jeunes adultes). L'âge n'est pas le facteur qui explique le mieux la survie dans cette représentation globale.
+
+# 3. Conclusion
+
+Les données démontrent statistiquement que le sexe et la classe sociale ont été des facteurs discriminants majeurs pour la survie lors de ce naufrage. L'âge, en revanche, n'apparaît pas comme un facteur isolé déterminant dans cette vue globale. Les explications de ces disparités relèvent du protocole d'évacuation maritime et des inégalités structurelles de la société de l'époque, qui ne sont pas "écrits" dans les graphiques mais les sous-tendent.
+
+# 4. Analyse complémentaire (facultative) : modèle logistique
+
+La variable `survived` étant une variable qualitative à deux modalités,
+on peut utiliser une régression logistique pour étudier son association avec
+plusieurs variables explicatives.
+
+```{r modele-logistique}
+modele <- glm(
+  survived ~ sex + passengerClass + age,
+  data = TitanicSurvival,
+  family = binomial,
+  na.action = na.omit
+)
+
+summary(modele)
+```
+
+Ce modèle utilise les observations pour lesquelles les variables du modèle
+sont renseignées. L'interprétation des coefficients doit tenir compte des
+modalités de référence et du codage des variables.
