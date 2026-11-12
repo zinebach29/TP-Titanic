@@ -499,45 +499,21 @@ disparités relèvent du protocole d’évacuation maritime et des inégalités
 structurelles de la société de l’époque, qui ne sont pas “écrits” dans
 les graphiques mais les sous-tendent.</p>
 </div>
-<div id="analyse-complémentaire-facultative-modèle-logistique" class="section level1">
-<h1>4. Analyse complémentaire (facultative) : modèle logistique</h1>
-<p>La variable <code>survived</code> étant une variable qualitative à
-deux modalités, on peut utiliser une régression logistique pour étudier
-son association avec plusieurs variables explicatives.</p>
-<pre class="r"><code>modele &lt;- glm(
-  survived ~ sex + passengerClass + age,
-  data = TitanicSurvival,
-  family = binomial,
-  na.action = na.omit
-)
+<div id="création-dun-package-r-avec-des-fonctions-danalyse" class="section level1">
+<h1>4. Création d’un package R avec des fonctions d’analyse</h1>
+<pre class="r"><code>library(carData)
+library(TitanicPckg)
 
-summary(modele)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = survived ~ sex + passengerClass + age, family = binomial, 
-##     data = TitanicSurvival, na.action = na.omit)
-## 
-## Coefficients:
-##                    Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)        3.522074   0.326702  10.781  &lt; 2e-16 ***
-## sexmale           -2.497845   0.166037 -15.044  &lt; 2e-16 ***
-## passengerClass2nd -1.280570   0.225538  -5.678 1.36e-08 ***
-## passengerClass3rd -2.289661   0.225802 -10.140  &lt; 2e-16 ***
-## age               -0.034393   0.006331  -5.433 5.56e-08 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1414.62  on 1045  degrees of freedom
-## Residual deviance:  982.45  on 1041  degrees of freedom
-##   (263 observations deleted due to missingness)
-## AIC: 992.45
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<p>Ce modèle utilise les observations pour lesquelles les variables du
-modèle sont renseignées. L’interprétation des coefficients doit tenir
-compte des modalités de référence et du codage des variables.</p>
+data(&quot;TitanicSurvival&quot;)
+taux_survie(TitanicSurvival, &quot;sex&quot;)</code></pre>
+<pre><code>##        modalite taux_survie
+## female   female    72.74678
+## male       male    19.09846</code></pre>
+<pre class="r"><code>taux_survie(TitanicSurvival, &quot;passengerClass&quot;)</code></pre>
+<pre><code>##     modalite taux_survie
+## 1st      1st    61.91950
+## 2nd      2nd    42.96029
+## 3rd      3rd    25.52891</code></pre>
 </div>
 
 

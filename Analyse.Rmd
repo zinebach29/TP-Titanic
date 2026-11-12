@@ -153,23 +153,18 @@ ggplot(
 
 Les données démontrent statistiquement que le sexe et la classe sociale ont été des facteurs discriminants majeurs pour la survie lors de ce naufrage. L'âge, en revanche, n'apparaît pas comme un facteur isolé déterminant dans cette vue globale. Les explications de ces disparités relèvent du protocole d'évacuation maritime et des inégalités structurelles de la société de l'époque, qui ne sont pas "écrits" dans les graphiques mais les sous-tendent.
 
-# 4. Analyse complémentaire (facultative) : modèle logistique
+# 4. Création d’un package R avec des fonctions d’analyse 
 
-La variable `survived` étant une variable qualitative à deux modalités,
-on peut utiliser une régression logistique pour étudier son association avec
-plusieurs variables explicatives.
+```{r}
+library(carData)
+library(TitanicPckg)
 
-```{r modele-logistique}
-modele <- glm(
-  survived ~ sex + passengerClass + age,
-  data = TitanicSurvival,
-  family = binomial,
-  na.action = na.omit
-)
+data("TitanicSurvival")
+taux_survie(TitanicSurvival, "sex")
+taux_survie(TitanicSurvival, "passengerClass")
 
-summary(modele)
+
+
 ```
 
-Ce modèle utilise les observations pour lesquelles les variables du modèle
-sont renseignées. L'interprétation des coefficients doit tenir compte des
-modalités de référence et du codage des variables.
+
