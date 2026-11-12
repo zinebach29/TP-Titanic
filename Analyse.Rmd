@@ -1,0 +1,24 @@
+---
+title: "TP - Analyse du dataset Titanic"
+output:
+  html_document:
+date: "2026-11-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+```{r}
+library(carData)
+
+data <- TitanicSurvival
+
+head(data)
+```
+
